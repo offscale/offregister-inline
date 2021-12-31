@@ -1,5 +1,5 @@
-from fabric.context_managers import shell_env, cd
-from fabric.operations import sudo, run
+from fabric.context_managers import cd, shell_env
+from fabric.operations import run, sudo
 
 
 def step0(*args, **kwargs):
