@@ -39,11 +39,12 @@ if __name__ == "__main__":
             "License :: OSI Approved :: Apache Software License",
             "Programming Language :: Python",
             "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3",
         ],
         test_suite=package_name + ".tests",
         packages=find_packages(),
         package_dir={package_name: package_name},
-        install_requires=["fab-classic"],
+        install_requires=["fabric2"],
         data_files=[
             (_data_install_dir(), list(map(_data_join, listdir(_data_join()))))
         ],
