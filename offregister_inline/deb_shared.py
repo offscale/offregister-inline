@@ -11,8 +11,18 @@ def step0(c, *args, **kwargs):
         return {
             k: tuple(v)
             for k, v in (
-                ("run", list(map(partial(c.run, env=env), kwargs["run"])) if "run" in kwargs else None),
-                ("sudo", list(map(partial(c.sudo, env=env), kwargs["sudo"])) if "sudo" in kwargs else None),
+                (
+                    "run",
+                    list(map(partial(c.run, env=env), kwargs["run"]))
+                    if "run" in kwargs
+                    else None,
+                ),
+                (
+                    "sudo",
+                    list(map(partial(c.sudo, env=env), kwargs["sudo"]))
+                    if "sudo" in kwargs
+                    else None,
+                ),
             )
             if v is not None
         }
