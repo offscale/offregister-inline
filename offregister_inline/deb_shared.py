@@ -1,25 +1,27 @@
 from functools import partial
 
 
-def step0(c, *args, **kwargs):
+def inline0(c, *args, **kwargs):
     """
+    Run `run` and/or `sudo` commands with `&&` condition
+
     :param c: Connection
     :type c: ```fabric.connection.Connection```
     """
     env = dict(**kwargs.get("ENV", {}))
+    runner = partial(c.run, env=env)
+    sudo_runner = partial(c.sudo, env=env)
     with c.cd(kwargs.get("CWD", "$HOME")):
         return {
             k: tuple(v)
             for k, v in (
                 (
                     "run",
-                    list(map(partial(c.run, env=env), kwargs["run"]))
-                    if "run" in kwargs
-                    else None,
+                    list(map(runner, kwargs["run"])) if "run" in kwargs else None,
                 ),
                 (
                     "sudo",
-                    list(map(partial(c.sudo, env=env), kwargs["sudo"]))
+                    list(map(sudo_runner, kwargs["sudo"]))
                     if "sudo" in kwargs
                     else None,
                 ),
@@ -28,4 +30,4 @@ def step0(c, *args, **kwargs):
         }
 
 
-__all__ = ["step0"]
+__all__ = ["inline0"]
