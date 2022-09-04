@@ -11,17 +11,29 @@ def inline0(c, *args, **kwargs):
     env = dict(**kwargs.get("ENV", {}))
     runner = partial(c.run, env=env)
     sudo_runner = partial(c.sudo, env=env)
+
+    def unwrap_non_err(f):
+        def get_out_of_non_err(res):
+            return res.stdout if res.exited == 0 else res
+
+        def inner(*args, **kwargs):
+            return get_out_of_non_err(f(*args, **kwargs))
+
+        return inner
+
     with c.cd(kwargs.get("CWD", "$HOME")):
         return {
             k: tuple(v)
             for k, v in (
                 (
                     "run",
-                    list(map(runner, kwargs["run"])) if "run" in kwargs else None,
+                    list(map(unwrap_non_err(runner), kwargs["run"]))
+                    if "run" in kwargs
+                    else None,
                 ),
                 (
                     "sudo",
-                    list(map(sudo_runner, kwargs["sudo"]))
+                    list(map(unwrap_non_err(sudo_runner), kwargs["sudo"]))
                     if "sudo" in kwargs
                     else None,
                 ),
